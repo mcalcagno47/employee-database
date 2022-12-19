@@ -13,9 +13,12 @@ VALUES (01, 'Sales Lead'),
     (06, 'Accountant'),
     (07, 'Legal Team Lead'),
     (08, 'Lawyer');
+
+INSERT INTO manager (id, first_name, last_name, roles_id)
+VALUES (1, ),
         
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
+INSERT INTO employee (id, first_name, last_name, roles_id, manager_id)
 VALUES (01, 'John', 'Doe', 01, 1),
     (02, 'Rebecca', 'Gomez', 01, 1),
     (03, 'George', 'Kleet', 02, 1),
