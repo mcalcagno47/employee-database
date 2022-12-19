@@ -5,7 +5,7 @@ class Queries {
         this.connection = connection;
     }
     viewAllEmployees() {
-        const sql = "SELECT employee.id, employee.first_name, .......";
+        const sql = "SELECT employee.id, employee.first_name, employee.last_name, employee.department, employee.salary";
         return this.connection.promise().query(sql)
     }
 }
