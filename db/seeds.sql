@@ -14,13 +14,13 @@ VALUES ('Sales Lead', 85000, 4),
     ('Legal Team Lead', 210000, 3),
     ('Lawyer', 180000, 3);
 
-INSERT INTO employee (id, first_name, last_name, roles_id, manager_id)
-VALUES (001, 'John', 'Doe', 01, 1),
-    (002, 'Rebecca', 'Gomez', 01, 1),
-    (003, 'George', 'Kleet', 02, 1),
-    (004, 'Mary', 'Rosenbaum', 03, 1),
-    (005, 'Mike', 'Rotch', 04, 2),
-    (006, 'Amanda', 'Rosenbaum', 05, 3),
-    (007, 'William', 'Runger', 06, 4),
-    (008, 'Jeff', 'Klein', 07, 5);
+INSERT INTO employees (id, first_name, last_name, roles_id, manager_id)
+VALUES ('John', 'Doe', 01, 1),
+    ('Rebecca', 'Gomez', 01, 1),
+    ('George', 'Kleet', 02, 1),
+    ('Mary', 'Rosenbaum', 03, 1),
+    ('Mike', 'Rotch', 04, 2),
+    ('Amanda', 'Rosenbaum', 05, 3),
+    ('William', 'Runger', 06, 4),
+    ('Jeff', 'Klein', 07, 5);
     
