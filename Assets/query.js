@@ -21,8 +21,3 @@ class  EmployeeQueries {
 };
 
 module.exports = new EmployeeQueries(db);
-
-
-
-// https://www.npmjs.com/package/mysql2#using-promise-wrapper
-// using promise wrapper, query database

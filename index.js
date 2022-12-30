@@ -51,13 +51,16 @@ function start() {
         })
 }
 
-function viewAllEmployees() {
-    const viewAllEmployees = db.getAllEmployees();
-    return inquirer.prompt([
-        {
-
+const viewAllEmployees = () => {
+    const allEmployees = `SELECT * from employees`;
+    db.query(allEmployees, (err, rows) => {
+        if (err) {
+            throw err;
         }
-    ])
+        console.log("\n");
+        console.table(rows);
+        return start();
+    });
 };
 
 app.listen(PORT, () => {
