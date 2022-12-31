@@ -4,15 +4,16 @@ const consoleTable = require('console.table');
 const db = require('./Assets/query');
 const PORT = process.env.PORT || 3001;
 const app = express();
+const EmployeeQueries = require("./Assets/query");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 console.log(db.getAllEmployees());
 
-start();
+promptInit();
 
-function start() {
+function promptInit() {
     inquirer.prompt([
         {
             type: 'list',
@@ -52,14 +53,30 @@ function start() {
 }
 
 const viewAllEmployees = () => {
-    const allEmployees = `SELECT * from employees`;
+    const allEmployees = new EmployeeQueries(db);
     db.query(allEmployees, (err, rows) => {
         if (err) {
             throw err;
         }
         console.log("\n");
         console.table(rows);
-        return start();
+        return promptInit();
+    });
+};
+
+const viewAllRoles = () => {
+    db.query(`SELECT * FROM role`, function (err, results) {
+        console.log(`\n`);
+        console.table(results);
+        promptUser();
+    })
+};
+
+const viewAllDepartments = () => {
+    db.query(`SELECT * FROM department`, function (err, results) {
+        console.log(`\n`);
+        console.table(results);
+        promptInit();
     });
 };
 
