@@ -24,3 +24,22 @@ VALUES ("John", "Doe", 01, 1),
     ("William", "Runger", 06, 4),
     ("Jeff", "Klein", 07, 5);
     
+
+
+CREATE VIEW employee_info AS
+(SELECT
+role.id AS role_id,
+role.title,
+role.salary,
+department.name AS department_name
+FROM role 
+JOIN department 
+on role.department_id = department.id);
+
+CREATE VIEW employees_with_managers AS
+(SELECT emp.id,
+emp.first_name,
+emp.last_name,
+emp.role_id,
+CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name
+FROM employee AS manager RIGHT OUTER JOIN employee AS emp ON manager.id = emp.manager_id);
