@@ -138,10 +138,10 @@ const updateRole = () => {
                 choices: roleArray
             },
         ]).then((data) => {
-            db.query(`SELECT id FROM roles WHERE roles.title = ?;`, data.roles, (err, results) => {
-                role_id = results[0].id;
+            db.query(`SELECT id FROM roles WHERE roles.title = '?';`, data.roles, (err, results) => {
+                roles_id = results[0].id;
                 db.query(`SELECT id FROM employees WHERE employees.first_name = ? AND employees.last_name = ?;`, data.employees.split(" "), (err, results) => {
-                    db.query(`UPDATE employees SET role_id = ? WHERE id = ?;`, [role_id, results[0].id], (err, results) => {
+                    db.query(`UPDATE employees SET roles_id = ? WHERE id = ?;`, [roles_id, results[0].id], (err, results) => {
                         console.log("\nEmployee role updated. See below:");
                         viewAllEmployees();
                     })
