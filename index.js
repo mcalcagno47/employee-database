@@ -100,7 +100,6 @@ const addRole = () => {
             }
         ])
         .then((data) => {
-            // Get's department id
             db.query(`SELECT id FROM department WHERE department.name = ?`, data.department, (err, results) => {
                 let department_id = results[0].id;
             db.query(`INSERT INTO roles(title, salary, department_id)
@@ -113,6 +112,47 @@ const addRole = () => {
     })
 }
 
+const updateRole = () => {
+    const roleArray= [];
+    const employeeArray= [];
+    db.query(`SELECT * FROM roles`, function (err, results) {
+        for (let i = 0; i < results.length; i++) {
+            roleArray.push(results[i].title);
+        }
+    db.query(`SELECT * FROM employees`, function (err, results) {
+        for (let i = 0; i < results.length; i++) {
+            let employeeName = `${results[i].first_name} ${results[i].last_name}`
+            employeeArray.push(employeeName);
+        }
+        return inquirer.prompt([
+            {
+                type: 'list',
+                message: "Which employee do you want to update?",
+                name: 'employee',
+                choices: employeeArray
+            },
+            {
+                type: 'list',
+                message: "What is the employee's new role?",
+                name: 'role',
+                choices: roleArray
+            },
+        ]).then((data) => {
+            db.query(`SELECT id FROM roles WHERE roles.title = ?;`, data.roles, (err, results) => {
+                role_id = results[0].id;
+                db.query(`SELECT id FROM employees WHERE employees.first_name = ? AND employees.last_name = ?;`, data.employees.split(" "), (err, results) => {
+                    db.query(`UPDATE employees SET role_id = ? WHERE id = ?;`, [role_id, results[0].id], (err, results) => {
+                        console.log("\nEmployee role updated. See below:");
+                        viewAllEmployees();
+                    })
+                })
+
+            })
+        })
+    })
+})
+};
+
 const viewAllDepartments = () => {
     db.query(`SELECT * FROM department`, function (err, results) {
         console.log(`\n`);
@@ -120,6 +160,22 @@ const viewAllDepartments = () => {
         promptInit();
     });
 };
+
+const addDepartments = () => {
+    return inquirer.prompt([
+        {
+            type: 'input',
+            message: "What is the name of the new department?",
+            name: 'name'
+        }
+    ])
+    .then((data) => {
+        db.query(`INSERT INTO department (name) VALUES (?)`, data.name, (err, results) => {
+            console.log("\nNew department added. See below:");
+            viewAllDepartments();
+        })
+    })
+}
 
 app.listen(PORT, () => {
     console.log(`Server runnning on port${PORT}`);
