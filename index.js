@@ -69,46 +69,84 @@ const viewAllEmployees = () => {
 
 const addEmployee = () => {
     const roleArray= [];
+    const employeeArray= [];
     db.query(`SELECT * FROM roles`, function (err, results) {
         for (let i = 0; i < results.length; i++) {
             roleArray.push(results[i].title);
-        }});
+        }
+    db.query(`SELECT * FROM employees`, function (err, results) {
+        for (let i = 0; i < results.length; i++) {
+            let employeeName = `${results[i].first_name} ${results[i].last_name}`
+            employeeArray.push(employeeName);
+        }
         return inquirer.prompt([
             {
                 type: 'input',
                 message: "What is the employee's first name?",
-                name: 'first_name'
+                name: 'first_name',
             },
             {
                 type: 'input',
                 message: "What is the employee's last name?",
-                name: 'last_name'
+                name: 'last_name',
             },
             {
                 type: 'list',
-                message: "What will their role be?",
+                message: "What is the employee's role?",
                 name: 'role',
                 choices: roleArray
             },
             {
-                type: 'number',
-                message: "What is the manager's id?",
-                name: 'manager',
-                default: '1'
-            },
-        ])
-    .then((data) => {
-        db.query(`SELECT * FROM employees`, data.employees, (err, results) => {
-            let employees_id = results[0].id;
-        db.query(`INSERT INTO empolyees(employees_id, first_name, last_name, role_id, manager_id)
-        VALUES (?,?,?)`, [            
-            employees_id, data.first_name, data.last_name, data.role, data.manager
-        ], (err, results) => {
-            console.log("\nNew empolyee added. See below:");
-            viewAllEmployees();
+                type: 'list',
+                message: "Does the employee have a manager?",
+                name: 'has_manager',
+                choices: ["Yes", "No"]
+            }
+        ]).then((data) => {
+            let roleName = data.roles;
+            let first_name = data.first_name;
+            let last_name = data.last_name;
+            let roles_id = '';
+            let manager = '';
+            db.query(`SELECT id FROM roles WHERE roles.title = ?`, data.roles, (err, results) => {
+                roles_id = results[0].id;
+            });
+            if (data.has_manager === "Yes") {
+                return inquirer.prompt([
+                    {
+                    type: 'list',
+                    message: "Please select the employees manager",
+                    name: 'manager',
+                    choices: employeeArray
+                    }   
+                ]).then((data) => {
+                    db.query(`SELECT id FROM roles WHERE roles.title = ?`, roleName, (err, results) => {
+                        roles_id = results[0].id;
+                    })
+                    db.query(`SELECT id FROM employees WHERE employees.first_name = ? AND employees.last_name = ?;`, data.manager.split(" "), (err, results) => {
+                        manager = results[0].id;
+                        db.query(`INSERT INTO employees (first_name, last_name, roles_id, manager_id) 
+                        VALUES (?,?,?,?)`, [first_name, last_name, roles_id, manager], (err, results) => {
+                            console.log("\nNew employee added. See below:");
+                            viewAllEmployees();
+                        })
+                    })
+                })
+            } else {
+                manager = null;
+                db.query(`SELECT id FROM roles WHERE roles.title = ?`, roleName, (err, results) => {
+                    roles_id = results[0].id;
+                    db.query(`INSERT INTO employees (first_name, last_name, roles_id, manager_id) 
+                    VALUES (?,?,?,?)`, [data.first_name, data.last_name, roles_id, manager], (err, results) => {
+                        console.log("\nNew employee added. See below:");
+                        viewAllEmployees();
+                    })
+                })
+            }
         })
     })
-})};
+})
+};
 
 const viewAllRoles = () => {
     db.query(`SELECT * FROM roles`, function (err, results) {
