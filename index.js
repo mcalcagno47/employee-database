@@ -1,15 +1,19 @@
 const inquirer = require('inquirer');
 const express = require('express');
 const consoleTable = require('console.table');
-const db = require('./Assets/query');
+const mysql = require('mysql2');
 const PORT = process.env.PORT || 3001;
 const app = express();
-const EmployeeQueries = require("./Assets/query");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-console.log(db.getAllEmployees());
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root', 
+    database: 'employee_db',
+    password: '47ATmysql.'
+});
 
 promptInit();
 
@@ -53,8 +57,7 @@ function promptInit() {
 }
 
 const viewAllEmployees = () => {
-    const allEmployees = new EmployeeQueries(db);
-    db.query(allEmployees, (err, rows) => {
+    db.query('SELECT * FROM employees', (err, rows) => {
         if (err) {
             throw err;
         }
@@ -65,10 +68,10 @@ const viewAllEmployees = () => {
 };
 
 const viewAllRoles = () => {
-    db.query(`SELECT * FROM role`, function (err, results) {
+    db.query(`SELECT * FROM roles`, function (err, results) {
         console.log(`\n`);
         console.table(results);
-        promptUser();
+        promptInit();
     })
 };
 
