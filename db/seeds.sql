@@ -28,18 +28,18 @@ VALUES ("John", "Doe", 01, 1),
 
 CREATE VIEW employee_info AS
 (SELECT
-role.id AS role_id,
-role.title,
-role.salary,
+roles.id AS roles_id,
+roles.title,
+roles.salary,
 department.name AS department_name
-FROM role 
+FROM roles 
 JOIN department 
-on role.department_id = department.id);
+on roles.department_id = department.id);
 
 CREATE VIEW employees_with_managers AS
 (SELECT emp.id,
 emp.first_name,
 emp.last_name,
-emp.role_id,
+emp.roles_id,
 CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name
-FROM employee AS manager RIGHT OUTER JOIN employee AS emp ON manager.id = emp.manager_id);
+FROM employees AS manager RIGHT OUTER JOIN employees AS emp ON manager.id = emp.manager_id);
