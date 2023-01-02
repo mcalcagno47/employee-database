@@ -67,6 +67,49 @@ const viewAllEmployees = () => {
     });
 };
 
+const addEmployee = () => {
+    const roleArray= [];
+    db.query(`SELECT * FROM roles`, function (err, results) {
+        for (let i = 0; i < results.length; i++) {
+            roleArray.push(results[i].title);
+        }});
+        return inquirer.prompt([
+            {
+                type: 'input',
+                message: "What is the employee's first name?",
+                name: 'first_name'
+            },
+            {
+                type: 'input',
+                message: "What is the employee's last name?",
+                name: 'last_name'
+            },
+            {
+                type: 'list',
+                message: "What will their role be?",
+                name: 'role',
+                choices: roleArray
+            },
+            {
+                type: 'number',
+                message: "What is the manager's id?",
+                name: 'manager',
+                default: '1'
+            },
+        ])
+    .then((data) => {
+        db.query(`SELECT * FROM employees`, data.employees, (err, results) => {
+            let employees_id = results[0].id;
+        db.query(`INSERT INTO empolyees(employees_id, first_name, last_name, role_id, manager_id)
+        VALUES (?,?,?)`, [            
+            employees_id, data.first_name, data.last_name, data.role, data.manager
+        ], (err, results) => {
+            console.log("\nNew empolyee added. See below:");
+            viewAllEmployees();
+        })
+    })
+})};
+
 const viewAllRoles = () => {
     db.query(`SELECT * FROM roles`, function (err, results) {
         console.log(`\n`);
