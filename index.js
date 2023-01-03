@@ -2,7 +2,6 @@ const inquirer = require('inquirer');
 const express = require('express');
 const consoleTable = require('console.table');
 const mysql = require('mysql2');
-const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -72,7 +71,7 @@ const addEmployee = () => {
     const employeeArray= [];
     db.query(`SELECT * FROM roles`, function (err, results) {
         for (let i = 0; i < results.length; i++) {
-            roleArray.push(results[i].title);
+            roleArray.push({ name: results[i].title, value: results[i].id });
         }
     db.query(`SELECT * FROM employees`, function (err, results) {
         for (let i = 0; i < results.length; i++) {
@@ -103,12 +102,12 @@ const addEmployee = () => {
                 choices: ["Yes", "No"]
             }
         ]).then((data) => {
-            let roleName = data.roles;
+            let roleName = data.role;
             let first_name = data.first_name;
             let last_name = data.last_name;
             let roles_id = '';
             let manager = '';
-            db.query(`SELECT id FROM roles WHERE roles.title = ?`, data.roles, (err, results) => {
+            db.query(`SELECT id FROM roles WHERE roles.id = ?`, data.role, (err, results) => {
                 roles_id = results[0].id;
             });
             if (data.has_manager === "Yes") {
@@ -121,6 +120,7 @@ const addEmployee = () => {
                     }   
                 ]).then((data) => {
                     db.query(`SELECT id FROM roles WHERE roles.title = ?`, roleName, (err, results) => {
+                        console.log(results);
                         roles_id = results[0].id;
                     })
                     db.query(`SELECT id FROM employees WHERE employees.first_name = ? AND employees.last_name = ?;`, data.manager.split(" "), (err, results) => {
@@ -257,8 +257,4 @@ const addDepartments = () => {
         })
     })
 }
-
-app.listen(PORT, () => {
-    console.log(`Server runnning on port${PORT}`);
-})
 
