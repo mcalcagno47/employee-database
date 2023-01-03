@@ -22,7 +22,7 @@ function promptInit() {
             type: 'list',
             name: 'memberChoice',
             message: 'What would you like to do?',
-            choices: ['View all employees', 'Add employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit']
+            choices: ['View all employees', 'Add employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department']
         }
     ])
 
@@ -48,9 +48,7 @@ function promptInit() {
                     break;
                 case 'Add Department':
                     addDepartments();
-                    break;                         
-                default:
-                    ending();
+                    break;
             }
         })
 }
@@ -220,13 +218,12 @@ const updateRole = () => {
             },
         ]).then((data) => {
             db.query(`SELECT id FROM roles WHERE roles.title = '?';`, data.role, (err, results) => {
-                db.query(`SELECT id FROM employees WHERE employees.first_name = ? AND employees.last_name = ?;`, data.employees, (err, results) => {
+                db.query(`SELECT id FROM employees WHERE employees.first_name = ? AND employees.last_name = ?;`, data.employee.split(" "), (err, results) => {
                     db.query(`UPDATE employees SET roles_id = ? WHERE id = ?;`, data.role, (err, results) => {
                         console.log("\nEmployee role updated. See below:");
                         viewAllEmployees();
                     })
                 })
-
             })
         })
     })
