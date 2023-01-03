@@ -198,7 +198,7 @@ const updateRole = () => {
     const employeeArray= [];
     db.query(`SELECT * FROM roles`, function (err, results) {
         for (let i = 0; i < results.length; i++) {
-            roleArray.push(results[i].title);
+            roleArray.push({ name: results[i].title, value: results[i].id});
         }
     db.query(`SELECT * FROM employees`, function (err, results) {
         for (let i = 0; i < results.length; i++) {
@@ -219,10 +219,9 @@ const updateRole = () => {
                 choices: roleArray
             },
         ]).then((data) => {
-            db.query(`SELECT id FROM roles WHERE roles.title = '?';`, data.roles, (err, results) => {
-                roles_id = results[0].id;
-                db.query(`SELECT id FROM employees WHERE employees.first_name = ? AND employees.last_name = ?;`, data.employees.split(" "), (err, results) => {
-                    db.query(`UPDATE employees SET roles_id = ? WHERE id = ?;`, [roles_id, results[0].id], (err, results) => {
+            db.query(`SELECT id FROM roles WHERE roles.title = '?';`, data.role, (err, results) => {
+                db.query(`SELECT id FROM employees WHERE employees.first_name = ? AND employees.last_name = ?;`, data.employees, (err, results) => {
+                    db.query(`UPDATE employees SET roles_id = ? WHERE id = ?;`, data.role, (err, results) => {
                         console.log("\nEmployee role updated. See below:");
                         viewAllEmployees();
                     })
