@@ -71,7 +71,7 @@ const addEmployee = () => {
     const employeeArray= [];
     db.query(`SELECT * FROM roles`, function (err, results) {
         for (let i = 0; i < results.length; i++) {
-            roleArray.push({ name: results[i].title, value: results[i].id });
+            roleArray.push({ name: results[i].title, value: results[i].id});
         }
     db.query(`SELECT * FROM employees`, function (err, results) {
         for (let i = 0; i < results.length; i++) {
@@ -119,7 +119,7 @@ const addEmployee = () => {
                     choices: employeeArray
                     }   
                 ]).then((data) => {
-                    db.query(`SELECT id FROM roles WHERE roles.title = ?`, roleName, (err, results) => {
+                    db.query(`SELECT id FROM roles WHERE roles.id = ?`, roleName, (err, results) => {
                         console.log(results);
                         roles_id = results[0].id;
                     })
@@ -134,7 +134,7 @@ const addEmployee = () => {
                 })
             } else {
                 manager = null;
-                db.query(`SELECT id FROM roles WHERE roles.title = ?`, roleName, (err, results) => {
+                db.query(`SELECT id FROM roles WHERE roles.id = ?`, roleName, (err, results) => {
                     roles_id = results[0].id;
                     db.query(`INSERT INTO employees (first_name, last_name, roles_id, manager_id) 
                     VALUES (?,?,?,?)`, [data.first_name, data.last_name, roles_id, manager], (err, results) => {
